@@ -15,9 +15,9 @@ const App = () => {
 
         <WelcomeMessage />
 
+        <UserProfile name = "Alice" age = {25} bio = "Loves hiking and photography" />
         <UserProfile name = "Laloo" age = {20} bio = "He is an Amazing Software Engineer" />
-        <UserProfile name = "Abel" age = {22} bio = "He is an Amazing Full Stack Developer!" />
-        <UserProfile name = "mikiyas" age = {24} bio = "He is an Amazing Frontend Developer!" />
+        <UserProfile name = "Mikiyas" age = {24} bio = "He is an Amazing Frontend Developer!" />
      </div>
   )
 }
