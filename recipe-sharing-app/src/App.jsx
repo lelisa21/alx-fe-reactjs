@@ -1,17 +1,15 @@
 
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import useRecipeStore from './components/recipeStore';
+import { useRecipeStore } from './components/srecipeStore';
 import RecipeList from './components/RecipeList';
 import AddRecipeForm from './components/AddRecipeForm';
 import RecipeDetails from './components/RecipeDetails';
 import EditRecipeForm from './components/EditRecipeForm';
-import SearchBar from './components/SearchBar';
 import FavoritesList from './components/FavoritesList';
-import RecommendationsList from './components/RecommendationsList';
-import './App.css';
+import SearchBar from './components/SearchBar';
 
-// Mock initial data
+
 const initialRecipes = [
   {
     id: 1,
@@ -20,8 +18,7 @@ const initialRecipes = [
     ingredients: ['Spaghetti', 'Eggs', 'Parmesan cheese', 'Pancetta', 'Black pepper'],
     instructions: 'Cook spaghetti. Fry pancetta. Mix eggs and cheese. Combine everything while hot.',
     prepTime: 20,
-    category: 'Italian',
-    createdAt: '2024-01-15'
+    category: 'Italian'
   },
   {
     id: 2,
@@ -30,39 +27,36 @@ const initialRecipes = [
     ingredients: ['Flour', 'Butter', 'Sugar', 'Chocolate chips', 'Vanilla extract'],
     instructions: 'Cream butter and sugar. Add flour and chocolate chips. Bake at 350°F for 10-12 minutes.',
     prepTime: 15,
-    category: 'Dessert',
-    createdAt: '2024-01-10'
+    category: 'Dessert'
   }
 ];
 
 function App() {
   const setRecipes = useRecipeStore(state => state.setRecipes);
 
-  useEffect(() => {
-    // Initialize with mock data
+  React.useEffect(() => {
     setRecipes(initialRecipes);
   }, [setRecipes]);
 
   return (
     <Router>
       <div className="app">
-        <header className="app-header">
+        <header>
           <h1>
-            <Link to="/">🍳 Recipe Sharing App</Link>
+            <Link to="/">Recipe Sharing App</Link>
           </h1>
-          <nav className="main-nav">
+          <nav>
             <Link to="/">All Recipes</Link>
             <Link to="/add">Add Recipe</Link>
             <Link to="/favorites">Favorites</Link>
           </nav>
         </header>
 
-        <main className="app-main">
+        <main>
           <Routes>
             <Route path="/" element={
-              <div className="home-page">
+              <div>
                 <SearchBar />
-                <RecommendationsList />
                 <RecipeList />
               </div>
             } />

@@ -1,130 +1,140 @@
-import React from "react";
-import useRecipeStore from "./recipeStore"
-import { useState } from "react";
+
+import { useState } from 'react';
+import { useRecipeStore } from '../store/recipeStore';
 
 const AddRecipeForm = () => {
-  const addRecipe = useRecipeStore((state) => state.addRecipe);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    ingredients: [""],
-    instructions: "",
-    prepTime: "",
-    category: "",
-  });
+  const addRecipe = useRecipeStore(state => state.addRecipe);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [ingredients, setIngredients] = useState(['']);
+  const [instructions, setInstructions] = useState('');
+  const [prepTime, setPrepTime] = useState('');
+  const [category, setCategory] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const recipeData = {
-      ...formData,
-      ingredients: formData.ingredients.filter((ing) => ing.trim() !== ""),
-      prepTime: parseInt(formData.prepTime) || 0,
-      createdAt: new Date().toISOString(),
+    
+    const newRecipe = {
+      id: Date.now(),
+      title,
+      description,
+      ingredients: ingredients.filter(ing => ing.trim() !== ''),
+      instructions,
+      prepTime: prepTime ? parseInt(prepTime) : 0,
+      category,
+      createdAt: new Date().toISOString()
     };
-    addRecipe(recipeData);
-    setFormData({
-      title: "",
-      description: "",
-      ingredients: [""],
-      prepTime: "",
-      category: "",
-    });
+    
+    addRecipe(newRecipe);
+    
+    // Reset form
+    setTitle('');
+    setDescription('');
+    setIngredients(['']);
+    setInstructions('');
+    setPrepTime('');
+    setCategory('');
   };
 
   const handleIngredientChange = (index, value) => {
-    const newIngredients = [...formData.ingredients];
+    const newIngredients = [...ingredients];
     newIngredients[index] = value;
-    setFormData({ ...formData, ingredients: newIngredients });
+    setIngredients(newIngredients);
   };
 
   const addIngredientField = () => {
-    setFormData({ ...formData, ingredients: [...formData.ingredients, ""] });
+    setIngredients([...ingredients, '']);
   };
+
   const removeIngredientField = (index) => {
-    const newIngredients = formData.ingredients.filter((_, i) => i !== index);
-    setFormData({ ...formData, ingredients: newIngredients });
+    const newIngredients = ingredients.filter((_, i) => i !== index);
+    setIngredients(newIngredients);
   };
 
   return (
-    <form action="" onSubmit={handleSubmit} className="add-recipe-form">
+    <form onSubmit={handleSubmit} className="add-recipe-form">
       <h2>Add New Recipe</h2>
+      
       <div className="form-group">
-        <label htmlFor="title">Title:</label>
+        <label>Title:</label>
         <input
           type="text"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Recipe title"
           required
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="description">Description: </label>
-        <input
-          type="text"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
+        <label>Description:</label>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          placeholder="Recipe description"
           required
         />
       </div>
 
       <div className="form-group">
-        <label htmlFor="ingredients">Ingredients: </label>
-        {formData.ingredients.map((ingredient, index) => (
-          <div key={index} className="ingredient-field">
+        <label>Ingredients:</label>
+        {ingredients.map((ingredient, index) => (
+          <div key={index} className="ingredient-row">
             <input
               type="text"
               value={ingredient}
-              onChange={(e) =>
-                handleIngredientChange(index, e.target.value)
-              }
+              onChange={(e) => handleIngredientChange(index, e.target.value)}
               placeholder={`Ingredient ${index + 1}`}
             />
-
-            {formData.ingredients.length > 1 && (
+            {ingredients.length > 1 && (
               <button
                 type="button"
                 onClick={() => removeIngredientField(index)}
+                className="remove-btn"
               >
                 Remove
               </button>
             )}
           </div>
         ))}
-        <button type="button" onClick={addIngredientField}>
+        <button type="button" onClick={addIngredientField} className="add-btn">
           Add Ingredient
         </button>
       </div>
 
       <div className="form-group">
-        <label htmlFor="instruction">Instruction: </label>
-        <textarea  value={formData.instructions}
-        onChange={e => setFormData({...formData , instructions : e.target.value})}  rows={"4"}/>
+        <label>Instructions:</label>
+        <textarea
+          value={instructions}
+          onChange={(e) => setInstructions(e.target.value)}
+          placeholder="Cooking instructions"
+          rows="4"
+        />
       </div>
 
-      <div className="form-group">
-        <label htmlFor="prepTime">Preparation Time (mins): </label>
-        <input
-          type="number"
-            value={formData.prepTime}
-            onChange={(e) =>
-                setFormData({ ...formData, prepTime: e.target.value })
-            }
-        />
-      </div>
+      <div className="form-row">
         <div className="form-group">
-        <label htmlFor="category">Category: </label>
-        <input
-          type="text"
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value })
-          }
-        />
+          <label>Prep Time (mins):</label>
+          <input
+            type="number"
+            value={prepTime}
+            onChange={(e) => setPrepTime(e.target.value)}
+            placeholder="Preparation time"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Category:</label>
+          <input
+            type="text"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            placeholder="e.g., Italian, Dessert"
+          />
+        </div>
       </div>
-      <button type="submit">Add Recipe</button>
+
+      <button type="submit" className="submit-btn">Add Recipe</button>
     </form>
   );
 };

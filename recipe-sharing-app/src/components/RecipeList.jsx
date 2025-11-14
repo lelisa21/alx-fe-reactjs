@@ -1,48 +1,22 @@
-/* eslint-disable no-unused-vars */
-// src/components/ErrorBoundary.jsx
-import React from 'react';
+// src/components/RecipeList.jsx
+import { useRecipeStore } from '../store/recipeStore';
+import { Link } from 'react-router-dom';
 
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
-  }
+const RecipeList = () => {
+  const recipes = useRecipeStore(state => state.recipes);
 
-  static getDerivedStateFromError(error) {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    this.setState({
-      error: error,
-      errorInfo: errorInfo
-    });
-    console.error('Error caught by boundary:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="error-boundary">
-          <h2>Something went wrong.</h2>
-          <details style={{ whiteSpace: 'pre-wrap' }}>
-            <summary>Error Details</summary>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo.componentStack}
-          </details>
-          <button 
-            onClick={() => this.setState({ hasError: false, error: null, errorInfo: null })}
-            style={{ marginTop: '1rem', padding: '0.5rem 1rem' }}
-          >
-            Try Again
-          </button>
+  return (
+    <div>
+      {recipes.map(recipe => (
+        <div key={recipe.id}>
+          <h3>
+            <Link to={`/recipe/${recipe.id}`}>{recipe.title}</Link>
+          </h3>
+          <p>{recipe.description}</p>
         </div>
-      );
-    }
+      ))}
+    </div>
+  );
+};
 
-    return this.props.children;
-  }
-}
-
-export default ErrorBoundary;
+export default RecipeList;
