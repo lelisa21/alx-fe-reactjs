@@ -1,7 +1,7 @@
 
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { useEffect } from 'react';
-import useRecipeStore from './recipeStore';
+import useRecipeStore from './components/recipeStore';
 import RecipeList from './components/RecipeList';
 import AddRecipeForm from './components/AddRecipeForm';
 import RecipeDetails from './components/RecipeDetails';
