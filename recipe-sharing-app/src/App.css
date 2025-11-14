@@ -1,0 +1,13 @@
+
+.app{
+ display: flex;
+ flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+    gap: 30px;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
