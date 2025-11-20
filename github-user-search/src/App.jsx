@@ -4,12 +4,7 @@ import Search from './components/Search'
 
 const App = () => {
   return (
-    <div style={{
-        display:"flex",
-        alignItems: "center",
-        justifyItems: "center",
-        margin: '30px'
-    }}>
+    <div className='flex flex-row bg-gray-300 h-screen'>
         <Search />
     </div>
   )

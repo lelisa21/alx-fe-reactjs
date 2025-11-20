@@ -52,7 +52,7 @@ const Search = () => {
           <button 
             type="submit" 
             disabled={loading || !username.trim()}
-            className="search-button"
+            className="bg-[#2ea44f] px-4 py-2 rounded-lg text-white text-2xl disabled:bg-[#94d3a2] disabled:cursor-not-allowed"
           >
             {loading ? 'Searching...' : 'Search'}
           </button>
@@ -69,7 +69,7 @@ const Search = () => {
       {/* Error State */}
       {error && !loading && (
         <div className="state-message error">
-          <p>Looks like we can't find the user</p>
+          <p>Looks like we cant find the user</p>
           <p className="error-detail">Error: {error}</p>
         </div>
       )}
