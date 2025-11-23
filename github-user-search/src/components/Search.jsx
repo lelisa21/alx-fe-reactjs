@@ -1,15 +1,16 @@
 import { useState } from 'react';
-import { fetchUserData } from '../services/githubService';
+import { fetchUserData, fetchUserRepos } from '../services/githubService';
 
 const Search = () => {
   const [username, setUsername] = useState('');
   const [userData, setUserData] = useState(null);
+  const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!username.trim()) {
       setError('Please enter a GitHub username');
       return;
@@ -18,10 +19,14 @@ const Search = () => {
     setLoading(true);
     setError(null);
     setUserData(null);
+    setRepos([]);
 
     try {
       const data = await fetchUserData(username);
+      const repoList = await fetchUserRepos(username);
+
       setUserData(data);
+      setRepos(repoList);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -31,10 +36,7 @@ const Search = () => {
 
   const handleInputChange = (e) => {
     setUsername(e.target.value);
-    // Clear error when user starts typing again
-    if (error) {
-      setError(null);
-    }
+    if (error) setError(null);
   };
 
   return (
@@ -49,8 +51,8 @@ const Search = () => {
             className="search-input"
             disabled={loading}
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading || !username.trim()}
             className="search-button"
           >
@@ -59,59 +61,38 @@ const Search = () => {
         </div>
       </form>
 
-      {/* Loading State */}
-      {loading && (
-        <div className="state-message loading">
-          <p>Loading...</p>
-        </div>
-      )}
+      {loading && <p>Loading...</p>}
 
-      {/* Error State */}
       {error && !loading && (
         <div className="state-message error">
-          <p>Looks like we cant find the user</p>
+          <p>Looks like we can't find the user</p>
           <p className="error-detail">Error: {error}</p>
         </div>
       )}
 
-      {/* Success State - User Data Display */}
+      {/* USER CARD */}
       {userData && !loading && !error && (
         <div className="user-card">
-          <div className="user-avatar">
-            <img 
-              src={userData.avatar_url} 
-              alt={`${userData.login}'s avatar`}
-              className="avatar"
-            />
-          </div>
-          <div className="user-info">
-            <h2 className="user-name">
-              {userData.name || userData.login}
-            </h2>
-            <p className="user-login">@{userData.login}</p>
-            {userData.bio && (
-              <p className="user-bio">{userData.bio}</p>
-            )}
-            <div className="user-stats">
-              <span className="stat">
-                <strong>{userData.public_repos}</strong> Repos
-              </span>
-              <span className="stat">
-                <strong>{userData.followers}</strong> Followers
-              </span>
-              <span className="stat">
-                <strong>{userData.following}</strong> Following
-              </span>
-            </div>
-            <a 
-              href={userData.html_url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="profile-link"
-            >
-              View GitHub Profile →
-            </a>
-          </div>
+          <img src={userData.avatar_url} className="avatar" alt="" />
+          <h2>{userData.name || userData.login}</h2>
+          <p>@{userData.login}</p>
+
+          {/* Repositories Section — uses .map() */}
+          <h3>User Repositories</h3>
+          <ul className="repo-list">
+            {repos.map((repo) => (
+              <li key={repo.id} className="repo-item">
+                <a
+                  href={repo.html_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {repo.name}
+                </a>
+                <p>{repo.description || 'No description'}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>
