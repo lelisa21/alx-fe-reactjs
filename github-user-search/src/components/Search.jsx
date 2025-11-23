@@ -52,7 +52,7 @@ const Search = () => {
           <button 
             type="submit" 
             disabled={loading || !username.trim()}
-            className="bg-[#2ea44f] px-4 py-2 rounded-lg text-white text-2xl disabled:bg-[#94d3a2] disabled:cursor-not-allowed"
+            className="search-button"
           >
             {loading ? 'Searching...' : 'Search'}
           </button>
