@@ -72,16 +72,15 @@ const Search = () => {
 
       {/* USER CARD */}
       {userData && !loading && !error && (
-        <div className="user-card">
+        <div className="flex flex-col gap-3 ">
           <img src={userData.avatar_url} className="avatar" alt="" />
           <h2>{userData.name || userData.login}</h2>
           <p>@{userData.login}</p>
 
-          {/* Repositories Section — uses .map() */}
           <h3>User Repositories</h3>
-          <ul className="repo-list">
+          <ul className="">
             {repos.map((repo) => (
-              <li key={repo.id} className="repo-item">
+              <li key={repo.id} className="user-card">
                 <a
                   href={repo.html_url}
                   target="_blank"
