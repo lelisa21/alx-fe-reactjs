@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "title": "Classic Spaghetti Carbonara",
+    "image": "https://images.unsplash.com/photo-1621996346565-e3dbc44ae37d?w=800&h=600&fit=crop",
+    "summary": "Creamy Italian pasta made with eggs, cheese, pancetta, and black pepper. A Roman classic that's ready in under 30 minutes!",
+    "prepTime": "10 min",
+    "cookTime": "15 min",
+    "servings": 4,
+    "difficulty": "easy",
+    "ingredients": [
+      "400g spaghetti",
+      "200g pancetta or guanciale, diced",
+      "4 large eggs",
+      "100g Pecorino Romano or Parmesan, finely grated",
+      "Freshly ground black pepper",
+      "Salt (for pasta water)"
+    ],
+    "instructions": [
+      "Bring a large pot of salted water to a boil and cook spaghetti until al dente.",
+      "Meanwhile, fry the pancetta in a large pan over medium heat until crispy. Remove from heat.",
+      "In a bowl, whisk together the eggs and grated cheese. Season generously with black pepper.",
+      "Reserve 1 cup of pasta water, then drain the spaghetti.",
+      "Quickly add the hot spaghetti to the pancetta pan (off heat). Toss to coat.",
+      "Pour in the egg and cheese mixture, stirring quickly. Add reserved pasta water a little at a time until creamy (not scrambled!).",
+      "Serve immediately with extra cheese and black pepper on top."
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Crispy Chicken Tikka Masala",
+    "image": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&h=600&fit=crop",
+    "summary": "Tender chicken pieces marinated in yogurt and spices, grilled to perfection, then simmered in a rich and creamy tomato curry sauce.",
+    "prepTime": "20 min + marinating",
+    "cookTime": "30 min",
+    "servings": 6,
+    "difficulty": "medium",
+    "ingredients": [
+      "800g chicken thighs, boneless & cut into chunks",
+      "200g Greek yogurt",
+      "4 tbsp tikka spice mix",
+      "1 large onion, finely chopped",
+      "4 garlic cloves, minced",
+      "2-inch ginger, grated",
+      "400g crushed tomatoes",
+      "200ml heavy cream",
+      "Fresh cilantro for garnish",
+      "Basmati rice or naan to serve"
+    ],
+    "instructions": [
+      "Mix chicken with yogurt and tikka spices. Marinate for at least 1 hour (overnight is best).",
+      "Preheat grill or oven to 220°C (425°F). Thread chicken onto skewers and grill/bake for 12–15 minutes until slightly charred.",
+      "In a large pan, sauté onion, garlic, and ginger until golden.",
+      "Add crushed tomatoes and simmer for 10 minutes.",
+      "Stir in cream and cooked chicken pieces. Simmer for another 10 minutes.",
+      "Taste and adjust seasoning. Garnish with fresh cilantro.",
+      "Serve hot with basmati rice or warm naan bread."
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Decadent Triple Chocolate Brownies",
+    "image": "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800&h=600&fit=crop",
+    "summary": "Ultra-fudgy brownies loaded with dark, milk, and white chocolate chunks. The ultimate chocolate lover's dream dessert!",
+    "prepTime": "15 min",
+    "cookTime": "30 min",
+    "servings": 16,
+    "difficulty": "easy",
+    "ingredients": [
+      "200g dark chocolate (70%), chopped",
+      "150g unsalted butter",
+      "200g granulated sugar",
+      "3 large eggs",
+      "100g all-purpose flour",
+      "30g cocoa powder",
+      "100g milk chocolate chunks",
+      "100g white chocolate chunks",
+      "1 tsp vanilla extract",
+      "½ tsp salt"
+    ],
+    "instructions": [
+      "Preheat oven to 180°C (350°F). Line a 20cm square pan with parchment paper.",
+      "Melt dark chocolate and butter together in a microwave or over a double boiler. Let cool slightly.",
+      "Whisk in sugar, then eggs one at a time, then vanilla.",
+      "Sift in flour, cocoa powder, and salt. Fold gently until just combined.",
+      "Fold in milk and white chocolate chunks.",
+      "Pour batter into prepared pan and smooth the top.",
+      "Bake for 28–32 minutes until the top is shiny and crackly but center is still slightly gooey.",
+      "Cool completely before cutting into squares. Enjoy warm with ice cream!"
+    ]
+  }
+]
