@@ -18,10 +18,10 @@ const HomePage = () => {
       </div>
     );
   return (
-    <div >
+    <div>
       <h2>Wecome To Recipe Page</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:grid-cols-3 m-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4 lg:grid-cols-3 m-5">
         {recipes.map((recipe) => (
           <Link to={`/recipe/${recipe.id}`} className="block h-full">
           <div key={recipe.id} className="flex flex-col items-center justify-center bg-slate-300 p-8 rounded-xl text-center hover:scale-105 transition-all duration-300">
