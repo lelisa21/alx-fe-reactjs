@@ -1,0 +1,406 @@
+@import "tailwindcss";
+
+@theme {
+  --color-library-primary: #3a86ff;
+  --color-library-secondary: #8338ec;
+  --color-library-accent: #ff006e;
+  --color-library-success: #38b000;
+  --color-library-warning: #ff9e00;
+  --color-library-danger: #d90429;
+  --color-library-info: #00bbf9;
+  --color-library-light: #f8f9fa;
+  --color-library-dark: #212529;
+  
+
+  --color-booking-available: #06d6a0;
+  --color-booking-pending: #ffd166;
+  --color-booking-reserved: #118ab2;
+  --color-booking-unavailable: #ef476f;
+  --color-booking-completed: #8ac926;
+  
+  /* Extended Spacing */
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-26: 6.5rem;
+
+  --font-family-heading: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-body: 'Open Sans', system-ui, -apple-system, sans-serif;
+  --font-family-mono: 'Fira Code', 'Courier New', monospace;
+  
+  /* Custom Border Radius */
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  
+  /* Custom Shadows */
+  --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-elevated: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Custom Animation */
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+/* Base Styles */
+@layer base {
+  :root {
+    color-scheme: light dark;
+  }
+  
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply font-body bg-background text-foreground antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-semibold tracking-tight;
+  }
+  
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-primary/50 rounded-full;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-primary;
+  }
+}
+
+/* Component Classes */
+@layer components {
+  /* Card Components */
+  .card {
+    @apply bg-card text-card-foreground rounded-xl border shadow-card transition-all duration-300 hover:shadow-card-hover;
+  }
+  
+  .card-header {
+    @apply flex flex-col space-y-1.5 p-6 pb-3;
+  }
+  
+  .card-title {
+    @apply font-heading text-2xl font-semibold leading-none tracking-tight;
+  }
+  
+  .card-description {
+    @apply text-sm text-muted-foreground;
+  }
+  
+  .card-content {
+    @apply p-6 pt-3;
+  }
+  
+  .card-footer {
+    @apply flex items-center p-6 pt-3;
+  }
+  
+  /* Book Card */
+  .book-card {
+    @apply card overflow-hidden hover:translate-y-[-4px] hover:shadow-elevated;
+  }
+  
+  .book-card-cover {
+    @apply w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105;
+  }
+  
+  .book-status {
+    @apply absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-semibold;
+  }
+  
+  .status-available {
+    @apply bg-booking-available/20 text-booking-available border border-booking-available/30;
+  }
+  
+  .status-reserved {
+    @apply bg-booking-reserved/20 text-booking-reserved border border-booking-reserved/30;
+  }
+  
+  .status-unavailable {
+    @apply bg-booking-unavailable/20 text-booking-unavailable border border-booking-unavailable/30;
+  }
+  
+  .status-completed {
+    @apply bg-booking-completed/20 text-booking-completed border border-booking-completed/30;
+  }
+  
+  /* Button Components */
+  .btn {
+    @apply inline-flex items-center justify-center whitespace-nowrap rounded-lg text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50;
+  }
+  
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90;
+  }
+  
+  .btn-outline {
+    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+  
+  .btn-destructive {
+    @apply bg-destructive text-destructive-foreground hover:bg-destructive/90;
+  }
+  
+  .btn-success {
+    @apply bg-library-success text-white hover:bg-library-success/90;
+  }
+  
+  .btn-warning {
+    @apply bg-library-warning text-white hover:bg-library-warning/90;
+  }
+  
+  .btn-lg {
+    @apply h-11 rounded-lg px-8;
+  }
+  
+  .btn-md {
+    @apply h-10 px-4 py-2;
+  }
+  
+  .btn-sm {
+    @apply h-9 rounded-lg px-3;
+  }
+  
+  .btn-icon {
+    @apply h-10 w-10;
+  }
+  
+  /* Badge Components */
+  .badge {
+    @apply inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+  
+  .badge-primary {
+    @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/80;
+  }
+  
+  .badge-secondary {
+    @apply border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80;
+  }
+  
+  .badge-outline {
+    @apply text-foreground;
+  }
+  
+  /* Input Components */
+  .input {
+    @apply flex h-10 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  
+  /* Calendar/Date Picker */
+  .date-picker-cell {
+    @apply flex h-9 w-9 items-center justify-center rounded-md p-0 text-sm font-normal aria-selected:opacity-100;
+  }
+  
+  .date-picker-cell-today {
+    @apply bg-accent text-accent-foreground;
+  }
+  
+  .date-picker-cell-selected {
+    @apply bg-primary text-primary-foreground;
+  }
+  
+  /* Alert Components */
+  .alert {
+    @apply relative w-full rounded-lg border p-4;
+  }
+  
+  .alert-info {
+    @apply bg-library-info/10 text-library-info border-library-info/30;
+  }
+  
+  .alert-success {
+    @apply bg-library-success/10 text-library-success border-library-success/30;
+  }
+  
+  .alert-warning {
+    @apply bg-library-warning/10 text-library-warning border-library-warning/30;
+  }
+  
+  .alert-destructive {
+    @apply bg-library-danger/10 text-library-danger border-library-danger/30;
+  }
+  
+  /* Skeleton Loader */
+  .skeleton {
+    @apply animate-pulse rounded-md bg-muted;
+  }
+  
+  /* Avatar */
+  .avatar {
+    @apply relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full;
+  }
+  
+  .avatar-image {
+    @apply aspect-square h-full w-full;
+  }
+  
+  .avatar-fallback {
+    @apply flex h-full w-full items-center justify-center rounded-full bg-muted;
+  }
+  
+  /* Booking Timeline */
+  .timeline-item {
+    @apply relative pl-8 pb-8 border-l border-border last:border-l-0 last:pb-0;
+  }
+  
+  .timeline-dot {
+    @apply absolute left-[-9px] top-0 h-4 w-4 rounded-full bg-primary;
+  }
+  
+  /* Library Specific Components */
+  .library-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+  
+  .book-meta {
+    @apply flex items-center gap-2 text-sm text-muted-foreground;
+  }
+  
+  .availability-indicator {
+    @apply inline-block h-3 w-3 rounded-full;
+  }
+  
+  .availability-available {
+    @apply bg-booking-available;
+  }
+  
+  .availability-low {
+    @apply bg-booking-pending;
+  }
+  
+  .availability-unavailable {
+    @apply bg-booking-unavailable;
+  }
+  
+  /* Search Filter */
+  .filter-chip {
+    @apply inline-flex items-center gap-1 px-3 py-1 rounded-full border text-sm transition-all hover:border-primary hover:bg-primary/5 cursor-pointer;
+  }
+  
+  .filter-chip-active {
+    @apply bg-primary text-primary-foreground border-primary;
+  }
+  
+  /* Modal/Overlay */
+  .modal-overlay {
+    @apply fixed inset-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0;
+  }
+  
+  .modal-content {
+    @apply fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] rounded-xl;
+  }
+}
+
+/* Utility Classes */
+@layer utilities {
+  /* Text Utilities */
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  
+  /* Gradient Utilities */
+  .gradient-primary {
+    @apply bg-gradient-to-r from-library-primary to-library-secondary;
+  }
+  
+  .gradient-accent {
+    @apply bg-gradient-to-r from-library-accent to-library-warning;
+  }
+  
+  /* Animation Utilities */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  /* Glass Morphism */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+  
+  .glass-dark {
+    @apply bg-black/20 backdrop-blur-md border border-white/10;
+  }
+  
+  /* Scroll Snap */
+  .snap-x-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+  
+  .snap-center {
+    scroll-snap-align: center;
+  }
+  
+  /* Library Specific Utilities */
+  .truncate-2-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .truncate-3-lines {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .book-shadow {
+    box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 0.1);
+  }
+  
+  .book-shadow-hover:hover {
+    box-shadow: 6px 6px 0px 0px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Focus Visible */
+  .focus-visible-primary {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-library-primary focus-visible:ring-offset-2;
+  }
+  
+  /* Print Styles */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    
+    .print-only {
+      display: block !important;
+    }
+    
+    body {
+      @apply bg-white text-black;
+    }
+  }
+}
+
+/* Dark Mode Specific */
+@custom-variant dark (&:where(.dark, .dark *));
