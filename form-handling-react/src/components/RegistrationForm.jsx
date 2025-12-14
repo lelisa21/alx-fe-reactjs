@@ -5,22 +5,30 @@ const RegistrationForm = () => {
 const [username, setUsername] = useState("");
 const [email, setEmail] = useState("");
 const [password, setPassword] = useState("");
-const [error, setError] = useState("");
+const [errors, setErrors] = useState({});
 
 
 const handleSubmit = (e) => {
 e.preventDefault();
 
 
-if (!username || !email || !password) {
-setError("All fields are required");
+const newErrors = {};
+
+
+if (!username) newErrors.username = "Username is required";
+if (!email) newErrors.email = "Email is required";
+if (!password) newErrors.password = "Password is required";
+
+
+if (Object.keys(newErrors).length > 0) {
+setErrors(newErrors);
 return;
 }
 
 
-setError("");
+setErrors({});
 console.log({ username, email, password });
-alert("Registration Successful ");
+alert("Registration Successful ✅");
 };
 
 
@@ -29,15 +37,13 @@ return (
 <h2>User Registration</h2>
 
 
-{error && <p className="error">{error}</p>}
-
-
 <input
 type="text"
 placeholder="Username"
 value={username}
 onChange={(e) => setUsername(e.target.value)}
 />
+{errors.username && <p className="error">{errors.username}</p>}
 
 
 <input
@@ -46,6 +52,7 @@ placeholder="Email"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
 />
+{errors.email && <p className="error">{errors.email}</p>}
 
 
 <input
@@ -54,6 +61,7 @@ placeholder="Password"
 value={password}
 onChange={(e) => setPassword(e.target.value)}
 />
+{errors.password && <p className="error">{errors.password}</p>}
 
 
 <button type="submit">Register</button>
