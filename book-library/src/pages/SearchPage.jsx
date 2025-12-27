@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { FiSearch, FiFilter, FiX, FiBook } from "react-icons/fi";
+import { FiSearch, FiFilter, FiX, FiBook, FiAlertCircle } from "react-icons/fi";
 import BookList from "../components/BookList";
 import SearchBar from "../components/SearchBar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -19,22 +19,41 @@ const SearchPage = () => {
     language: "",
     hasCover: false,
   });
+  const [isSearching, setIsSearching] = useState(false);
 
   const { searchBooksByQuery, searchResults, isLoading, error } = useBooks();
 
-  useEffect(() => {
-    if (query) {
-      searchBooksByQuery(query);
-      setSearchQuery(query);
-    }
-  }, [query]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
+  // Fixed: Use useCallback to prevent infinite re-renders
+  const handleSearch = useCallback((e) => {
+    if (e) e.preventDefault();
     if (searchQuery.trim()) {
       setSearchParams({ q: searchQuery.trim() });
     }
-  };
+  }, [searchQuery, setSearchParams]);
+
+  // Fixed: Only run when query changes, not searchBooksByQuery
+  useEffect(() => {
+    if (query && query.trim()) {
+      const performSearch = async () => {
+        setIsSearching(true);
+        await searchBooksByQuery(query);
+        setIsSearching(false);
+      };
+      performSearch();
+    }
+  }, [query]); // Only depend on query, not searchBooksByQuery
+
+  // Handle search on mount if there's a query in URL
+  useEffect(() => {
+    if (query && query.trim() && searchResults.length === 0) {
+      const initialSearch = async () => {
+        setIsSearching(true);
+        await searchBooksByQuery(query);
+        setIsSearching(false);
+      };
+      initialSearch();
+    }
+  }, []); // Empty dependency - only run once on mount
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({
@@ -52,6 +71,11 @@ const SearchPage = () => {
     });
   };
 
+  const clearSearch = () => {
+    setSearchQuery("");
+    setSearchParams({});
+  };
+
   const filteredBooks = searchResults.filter((book) => {
     if (
       filters.yearFrom &&
@@ -65,6 +89,11 @@ const SearchPage = () => {
     if (filters.hasCover && !book.cover_i) {
       return false;
     }
+    if (filters.language && filters.language !== "all") {
+      // Note: OpenLibrary API doesn't always provide language in search results
+      // You might need to adjust this based on your actual data structure
+      return true;
+    }
     return true;
   });
 
@@ -73,22 +102,40 @@ const SearchPage = () => {
       <div className="space-y-8">
         {/* Search Header */}
         <div className="space-y-4">
-          <h1 className="heading-2">Search Books</h1>
+          <div className="flex items-center justify-between">
+            <h1 className="heading-2">Search Books</h1>
+            {query && (
+              <button
+                onClick={clearSearch}
+                className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+              >
+                Clear Search
+              </button>
+            )}
+          </div>
           <form onSubmit={handleSearch} className="relative max-w-3xl">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for books, authors, or topics..."
-              className="input-base text-lg py-4 pl-12 pr-24"
+              className="input-base text-lg py-4 pl-12 pr-24 w-full"
               autoFocus
             />
             <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-gray-400" />
             <button
               type="submit"
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 btn-primary px-6"
+              disabled={isSearching || !searchQuery.trim()}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 btn-primary px-6 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Search
+              {isSearching ? (
+                <div className="flex items-center">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                  Searching...
+                </div>
+              ) : (
+                "Search"
+              )}
             </button>
           </form>
 
@@ -96,34 +143,40 @@ const SearchPage = () => {
             <div className="flex items-center justify-between">
               <p className="text-gray-600 dark:text-gray-400">
                 Found {searchResults.length} results for "{query}"
+                {isSearching && " (searching...)"}
               </p>
-              <div className="flex items-center space-x-4">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="input-base"
-                >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      Sort by: {option.label}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => setShowFilters(!showFilters)}
-                  className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800"
-                >
-                  <FiFilter className="w-5 h-5" />
-                  <span>Filters</span>
-                </button>
-              </div>
+              {searchResults.length > 0 && (
+                <div className="flex items-center space-x-4">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="input-base text-sm"
+                  >
+                    {SORT_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center space-x-2 px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    <FiFilter className="w-5 h-5" />
+                    <span>Filters</span>
+                    {Object.values(filters).some(val => val !== "" && val !== false) && (
+                      <span className="w-2 h-2 bg-primary rounded-full"></span>
+                    )}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>
 
         {/* Filters Panel */}
         {showFilters && (
-          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 space-y-6">
+          <div className="bg-gray-50 dark:bg-gray-800 rounded-2xl p-6 space-y-6 animate-slideDown">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-bold">Filters</h3>
               <button
@@ -149,6 +202,8 @@ const SearchPage = () => {
                       handleFilterChange("yearFrom", e.target.value)
                     }
                     className="input-base"
+                    min="1000"
+                    max="2100"
                   />
                   <input
                     type="number"
@@ -158,6 +213,8 @@ const SearchPage = () => {
                       handleFilterChange("yearTo", e.target.value)
                     }
                     className="input-base"
+                    min="1000"
+                    max="2100"
                   />
                 </div>
               </div>
@@ -191,53 +248,82 @@ const SearchPage = () => {
                   />
                   <span className="label-base">Has Cover Image</span>
                 </label>
+                <p className="text-xs text-gray-500 mt-2">
+                  Only show books with cover images
+                </p>
               </div>
             </div>
           </div>
         )}
 
         {/* Search Results */}
-        {isLoading ? (
+        {isLoading || isSearching ? (
           <div className="flex justify-center items-center min-h-[400px]">
-            <LoadingSpinner size="lg" text="Searching books..." />
+            <LoadingSpinner size="lg" text={isSearching ? "Searching books..." : "Loading..."} />
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <div className="text-red-500 text-4xl mb-4">⚠️</div>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/20 text-red-500 mb-4">
+              <FiAlertCircle className="w-8 h-8" />
+            </div>
             <h3 className="text-xl font-bold mb-2">Search Error</h3>
-            <p className="text-gray-600 dark:text-gray-400">{error}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{error}</p>
             <button
               onClick={() => searchBooksByQuery(query)}
-              className="mt-4 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
+              className="btn-primary"
             >
               Try Again
             </button>
           </div>
         ) : query ? (
-          <BookList
-            books={filteredBooks}
-            title={`Results for "${query}"`}
-            isLoading={isLoading}
-          />
+          <>
+            {filteredBooks.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="text-4xl mb-4">🔍</div>
+                <h3 className="text-xl font-bold mb-2">No Results Found</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  No books found for "{query}" with current filters
+                </p>
+                <button
+                  onClick={clearFilters}
+                  className="btn-outline mr-4"
+                >
+                  Clear Filters
+                </button>
+                <button
+                  onClick={clearSearch}
+                  className="btn-primary"
+                >
+                  New Search
+                </button>
+              </div>
+            ) : (
+              <BookList
+                books={filteredBooks}
+                title={`Results for "${query}"`}
+              />
+            )}
+          </>
         ) : (
           <div className="text-center py-12">
             <div className="text-4xl mb-4">🔍</div>
             <h3 className="text-xl font-bold mb-2">Start Searching</h3>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400 mb-8">
               Enter a book title, author name, or topic to begin your search
             </p>
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-2xl mx-auto">
               {[
-                { icon: "📖", text: "Search by book title" },
-                { icon: "✍️", text: "Search by author name" },
-                { icon: "🏷️", text: "Search by genre or topic" },
+                { icon: "📖", text: "Search by book title", example: "Harry Potter" },
+                { icon: "✍️", text: "Search by author name", example: "Stephen King" },
+                { icon: "🏷️", text: "Search by genre or topic", example: "Science Fiction" },
               ].map((tip, index) => (
                 <div
                   key={index}
-                  className="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl"
+                  className="p-6 bg-gray-50 dark:bg-gray-800 rounded-xl hover:shadow-md transition-shadow"
                 >
                   <div className="text-3xl mb-3">{tip.icon}</div>
-                  <p className="text-sm">{tip.text}</p>
+                  <p className="text-sm font-medium mb-2">{tip.text}</p>
+                  <p className="text-xs text-gray-500">e.g., {tip.example}</p>
                 </div>
               ))}
             </div>
@@ -246,12 +332,12 @@ const SearchPage = () => {
 
         {/* Search Tips */}
         {!query && (
-          <div className="bg-linear-to-r from-primary/5 to-secondary/5 rounded-2xl p-8">
+          <div className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-2xl p-8">
             <h3 className="text-xl font-bold mb-4">Search Tips</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold mb-2">📚 Try These Searches</h4>
-                <ul className="space-y-2">
+                <div className="flex flex-wrap gap-2">
                   {[
                     "Harry Potter",
                     "Stephen King",
@@ -259,27 +345,38 @@ const SearchPage = () => {
                     "Biography",
                     "Classic Novels",
                   ].map((term) => (
-                    <li key={term}>
-                      <button
-                        onClick={() => {
-                          setSearchQuery(term);
-                          setSearchParams({ q: term });
-                        }}
-                        className="text-primary hover:underline"
-                      >
-                        {term}
-                      </button>
-                    </li>
+                    <button
+                      key={term}
+                      onClick={() => {
+                        setSearchQuery(term);
+                        setSearchParams({ q: term });
+                      }}
+                      className="px-3 py-1.5 text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                    >
+                      {term}
+                    </button>
                   ))}
-                </ul>
+                </div>
               </div>
               <div>
                 <h4 className="font-bold mb-2">💡 Advanced Search</h4>
                 <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                  <li>Use quotes for exact phrases: "To Kill a Mockingbird"</li>
-                  <li>Search by ISBN: 9780451524935</li>
-                  <li>Combine terms: mystery AND thriller</li>
-                  <li>Exclude terms: fantasy -romance</li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Use quotes for exact phrases: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">"To Kill a Mockingbird"</code></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Search by ISBN: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">9780451524935</code></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Combine terms: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">mystery AND thriller</code></span>
+                  </li>
+                  <li className="flex items-start">
+                    <span className="text-primary mr-2">•</span>
+                    <span>Exclude terms: <code className="bg-gray-100 dark:bg-gray-800 px-1 rounded">fantasy -romance</code></span>
+                  </li>
                 </ul>
               </div>
             </div>
