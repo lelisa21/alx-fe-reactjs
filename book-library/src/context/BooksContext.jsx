@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useCallback } from 'react';
-import { searchBooks, getBookDetails } from '../utils/api';
+import { searchBooks, getBookDetails, getBooksBySubject } from '../utils/api'; 
 
 const BooksContext = createContext();
 
@@ -35,25 +35,32 @@ export const BooksProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, []); 
 
   const fetchFeaturedBooks = useCallback(async () => {
     setIsLoading(true);
     try {
-      // Fetch popular books for featured section
-      const popularTitles = ['Harry Potter', 'The Hobbit', '1984', 'Pride and Prejudice', 'To Kill a Mockingbird'];
-      const allBooks = [];
-      
-      for (const title of popularTitles.slice(0, 3)) {
-        const books = await searchBooks(title);
-        if (books.length > 0) {
-          allBooks.push(books[0]);
-        }
-      }
-      
-      setFeaturedBooks(allBooks);
+  
+      const books = await getBooksBySubject('fiction', 10);
+      setFeaturedBooks(books);
     } catch (err) {
       console.error('Error fetching featured books:', err);
+
+      setFeaturedBooks([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const fetchBooksBySubject = useCallback(async (subject, limit = 20) => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const books = await getBooksBySubject(subject, limit);
+      return books; 
+    } catch (err) {
+      setError(err.message);
+      return []; 
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +94,7 @@ export const BooksProvider = ({ children }) => {
     searchBooksByQuery,
     fetchFeaturedBooks,
     getBookById,
+    fetchBooksBySubject, 
     clearSearchResults,
     setBooks,
   };

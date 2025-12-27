@@ -49,7 +49,7 @@ const BookList = ({ books, isLoading, error, title = "Books", showFilters = true
     }
 
     setFilteredBooks(filtered);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
   }, [books, sortBy, selectedCategories]);
 
   // Calculate pagination
@@ -104,7 +104,7 @@ const BookList = ({ books, isLoading, error, title = "Books", showFilters = true
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="heading-3">{title}</h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-100 dark:text-gray-400">
             Showing {filteredBooks.length} books
             {selectedCategories.length > 0 && ` in ${selectedCategories.length} categories`}
           </p>

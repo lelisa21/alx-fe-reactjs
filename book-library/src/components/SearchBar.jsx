@@ -49,7 +49,6 @@ const SearchBar = ({ onClose, compact = false }) => {
       <form onSubmit={handleSubmit} className="relative">
         <div className={`relative ${compact ? "" : "max-w-2xl mx-auto"}`}>
           <div className="absolute left-4 top-1/2 transform -translate-y-1/2">
-            <FiSearch className="w-5 h-5 text-gray-400" />
           </div>
           <input
             type="text"

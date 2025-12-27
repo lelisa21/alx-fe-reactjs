@@ -13,27 +13,29 @@ const CategoriesPage = () => {
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { fetchBooksBySubject } = useBooks();
-
-  useEffect(() => {
-    const loadBooks = async () => {
-      setIsLoading(true);
-      try {
-        if (selectedCategory === "all") {
-          // Mock data for all categories
-          setBooks([]);
-        } else {
-          const categoryBooks = await fetchBooksBySubject(selectedCategory);
-          setBooks(categoryBooks);
-        }
-      } catch (error) {
-        console.error("Error loading books:", error);
-      } finally {
-        setIsLoading(false);
+useEffect(() => {
+  const loadBooks = async () => {
+    setIsLoading(true);
+    try {
+      if (selectedCategory === "all") {
+        const fictionBooks = await fetchBooksBySubject("fiction", 5);
+        const fantasyBooks = await fetchBooksBySubject("fantasy", 5);
+        const mysteryBooks = await fetchBooksBySubject("mystery", 5);
+        setBooks([...fictionBooks, ...fantasyBooks, ...mysteryBooks]);
+      } else {
+        const categoryBooks = await fetchBooksBySubject(selectedCategory, 20);
+        setBooks(categoryBooks);
       }
-    };
+    } catch (error) {
+      console.error("Error loading books:", error);
+      setBooks([]); 
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    loadBooks();
-  }, [selectedCategory, fetchBooksBySubject]);
+  loadBooks();
+}, [selectedCategory]); 
 
   const getCategoryInfo = (categoryId) => {
     if (categoryId === "all") {
@@ -49,7 +51,6 @@ const CategoriesPage = () => {
         },
       };
     }
-
     const category = CATEGORIES.find((c) => c.id === categoryId);
     if (!category) return null;
 
@@ -140,7 +141,7 @@ const CategoriesPage = () => {
                     }[category.id]
                   }
                 </div>
-                <div className="text-sm font-medium">{category.name}</div>
+                <div className="text-sm text-white font-medium">{category.name}</div>
               </div>
             </button>
           ))}
@@ -155,14 +156,14 @@ const CategoriesPage = () => {
                   <div className="text-6xl">{categoryInfo.icon}</div>
                   <div>
                     <h2 className="heading-3">{categoryInfo.name}</h2>
-                    <p className="text-gray-700 dark:text-gray-300 mt-2">
+                    <p className="text-gray-900 dark:text-gray-300 mt-2">
                       {categoryInfo.description}
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white/50 dark:bg-black/50 rounded-xl p-4">
+                  <div className="bg-white/80 dark:bg-black/50 rounded-xl p-4">
                     <div className="flex items-center space-x-2 mb-2">
                       <FiGrid className="w-5 h-5" />
                       <span className="font-bold">Books</span>
@@ -209,7 +210,7 @@ const CategoriesPage = () => {
                         to={`/search?q=${encodeURIComponent(
                           item.toLowerCase()
                         )}&category=${selectedCategory}`}
-                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                        className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-primary"
                       >
                         <span>{item}</span>
                         <FiClock className="w-4 h-4 text-gray-400" />

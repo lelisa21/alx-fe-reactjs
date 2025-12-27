@@ -27,7 +27,7 @@ const SearchPage = () => {
       searchBooksByQuery(query);
       setSearchQuery(query);
     }
-  }, [query, searchBooksByQuery]);
+  }, [query]);
 
   const handleSearch = (e) => {
     e.preventDefault();
